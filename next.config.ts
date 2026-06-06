@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Fix for useSearchParams in production
+  experimental: {
+    dynamicIO: true,
+  },
 };
 
 export default nextConfig;
