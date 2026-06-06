@@ -21,7 +21,6 @@ function LoginForm() {
       router.push('/dashboard')
     }
 
-    // Check for Google error
     const googleError = searchParams.get('error')
     if (googleError === 'google_failed') {
       setError('Login dengan Google gagal. Silakan coba lagi.')
@@ -36,7 +35,6 @@ function LoginForm() {
     try {
       const res = await api.post('/login', { email, password })
       setAuth(res.data.user, res.data.token)
-
       setTimeout(() => {
         router.push('/dashboard')
       }, 100)
@@ -55,7 +53,6 @@ function LoginForm() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 w-full max-w-md p-8">
-
         <div className="mb-8">
           <h1 className="text-2xl font-semibold text-gray-900">Selamat datang</h1>
           <p className="text-gray-500 mt-1">Login ke akun Invoiceku kamu</p>
@@ -67,7 +64,6 @@ function LoginForm() {
           </div>
         )}
 
-        {/* Google Login Button */}
         <button
           onClick={handleGoogleLogin}
           disabled={googleLoading}
@@ -135,7 +131,6 @@ function LoginForm() {
             Daftar sekarang
           </a>
         </p>
-
       </div>
     </div>
   )
