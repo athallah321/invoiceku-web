@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense } from 'react'
-import GoogleCallback from './callback'
+import GoogleCallback from './GoogleCallback'
 
 function GoogleFallback() {
   return (
