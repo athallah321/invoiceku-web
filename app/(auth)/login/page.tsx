@@ -1,14 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import api from '@/lib/axios'
 import { useAuthStore } from '@/store/authStore'
 
-export const dynamic = 'force-dynamic'
-
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const setAuth = useAuthStore((state) => state.setAuth)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -21,7 +20,12 @@ export default function LoginPage() {
     if (token) {
       router.push('/dashboard')
     }
-  }, [router])
+
+    const googleError = searchParams.get('error')
+    if (googleError === 'google_failed') {
+      setError('Login dengan Google gagal. Silakan coba lagi.')
+    }
+  }, [router, searchParams])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,7 +53,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 w-full max-w-md p-8">
-
         <div className="mb-8">
           <h1 className="text-2xl font-semibold text-gray-900">Selamat datang</h1>
           <p className="text-gray-500 mt-1">Login ke akun Invoiceku kamu</p>
@@ -86,9 +89,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
               type="email"
               value={email}
@@ -100,9 +101,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
               type="password"
               value={password}
@@ -124,12 +123,30 @@ export default function LoginPage() {
 
         <p className="text-center text-sm text-gray-500 mt-6">
           Belum punya akun?{' '}
-          <a href="/register" className="text-blue-600 hover:underline font-medium">
-            Daftar sekarang
-          </a>
+          <a href="/register" className="text-blue-600 hover:underline font-medium">Daftar sekarang</a>
         </p>
-
       </div>
     </div>
+  )
+}
+
+function LoginFallback() {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 w-full max-w-md p-8">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginFallback />}>
+      <LoginContent />
+    </Suspense>
   )
 }
